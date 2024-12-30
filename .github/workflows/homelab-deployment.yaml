@@ -49,3 +49,8 @@ jobs:
         uses: actions-hub/kubectl@master
         with:
           args: apply -f kubernetes/app-service.yaml
+
+      - name: Rollout Application (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: rollout restart deployment/ecom-web

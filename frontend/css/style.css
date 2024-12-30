@@ -1224,16 +1224,16 @@ body.dark-mode .apply_now_area {
 body.dark-mode .check_tittle h2 {
   color: #bb86fc; /* Or any color that stands out on black background */
 }
-body.dark-mode .business_content .media-body a {
-  color: #ffffff; /* White color for the link to ensure it's visible */
+body.dark-mode .it_works .business_content .media-body a {
+  color: #ffffff !important; /* Ensure the link is white and stands out */
 }
 
-body.dark-mode .business_content .media-body p {
-  color: #dcdcdc; /* Lighter grey for better contrast (almost white) */
+body.dark-mode .it_works .business_content .media-body p {
+  color: #e0e0e0 !important; /* Light grey text for better readability */
 }
 
-body.dark-mode .business_content .media-body span {
-  color: #ff4081; /* Bright color for the price, if desired */
+body.dark-mode .it_works .business_content .media-body span {
+  color: #ff4081 !important; /* Bright color for the price */
 }
 /* ----------------------------- */
 
