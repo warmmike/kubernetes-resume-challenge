@@ -30,7 +30,7 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>
+    <body class="dark-mode">
         <!--==========Main Header==========-->
         <header class="main_header_area">
             <nav class="navbar navbar-default navbar-fixed-top" id="main_navbar">

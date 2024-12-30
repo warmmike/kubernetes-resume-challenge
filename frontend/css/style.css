@@ -1132,6 +1132,53 @@ ul {
     width: 180px;
   }
 }
+
+/* Start Dark Mode Overrides */
+body.dark-mode {
+  background-color: #121212;
+}
+
+/* Navbar */
+body.dark-mode .navbar.navbar-default {
+  background-color: #1c1c1c;
+}
+
+/* Footer */
+body.dark-mode .footer_area {
+  background: #181818;
+}
+
+/* Slider */
+body.dark-mode .slider_area {
+  background: url("../img/dark_slider.jpg") no-repeat center center;
+  background-size: cover;
+}
+
+/* Testimonial Section */
+body.dark-mode .clients_testimonials_area {
+  background: #202020;
+}
+
+/* FAQ Section */
+body.dark-mode .program_area {
+  background: #202020;
+}
+
+/* Contact Section */
+body.dark-mode .footer_area .footer_from_area .from_main {
+  background-color: #333;
+}
+
+/* About Section */
+body.dark-mode .about_rogram {
+  background-color: #202020;
+}
+
+/* Extended Sections */
+body.dark-mode .program_area {
+  background: #222;
+}
+
 /* ----------------------------- */
 
 /*# sourceMappingURL=style.css.map */
