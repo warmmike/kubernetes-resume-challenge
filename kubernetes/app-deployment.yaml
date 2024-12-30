@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ecom-web
+  name: ecom-web
+spec:
+  selector:
+    matchLabels:
+      app: ecom-web
+  template:
+    metadata:
+      labels:
+        app: ecom-web
+    spec:
+      containers:
+      - image: 192.168.1.100:5000/ecom-web
+        name: ecom-web
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

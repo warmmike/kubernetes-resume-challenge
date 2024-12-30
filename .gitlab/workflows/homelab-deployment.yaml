@@ -1,0 +1,41 @@
+name: Deploy Ecom-Web to Homelab
+on:
+  push:
+    branches:
+      -main
+
+env:
+  KUBE_CONFIG: {{ secrest.KUBE_CONFIG }}
+
+jobs:
+  build:
+    runs-on: arc-runner-setx
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build Container
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: 192.168.1.100:5000/ecom-web:latest
+          file: Dockerfile
+
+  deploy:
+    needs: [build]
+
+    runs-on: arc-runner-setx
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Deploy Application (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f kubernetes/app-deployment.yaml
+
+      - name: Deploy Application (service)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f kubernetes/app-service.yaml

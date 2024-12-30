@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:80'
+  mariadb:
+    image: mariadb
+    env_file: .env.local
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./frontend/assets/db-load-script.sql:/docker-entrypoint-initdb.d/1.sql"
