@@ -6,8 +6,8 @@ https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 - STEP3 Set Up Kubernetes on Public Cloud
   - Github Actions and Terraform will be used for this STEP.
 
-- STEP2.5 Set Up Kubernetes on Public Cloud
-  - I have been using Actions and Self-Hosted Runners for my Homelab
+- STEP2.5 Set Up Kubernetes
+  - I have been using Github Actions and Self-Hosted Runners for my Homelab
   - Using my Homelab Kubernetes environment gave me the confidence to Deploy and Expose the application, partially completing STEP4, STEP5 and STEP6.
   - Added the following to continuously test container image with imagePullPolicy='Always'
     ```
