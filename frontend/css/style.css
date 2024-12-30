@@ -1136,47 +1136,90 @@ ul {
 /* Start Dark Mode Overrides */
 body.dark-mode {
   background-color: #121212;
+  color: #e0e0e0; /* Ensure readable text */
 }
 
 /* Navbar */
 body.dark-mode .navbar.navbar-default {
   background-color: #1c1c1c;
+  color: #e0e0e0;
+}
+body.dark-mode .navbar.navbar-default .main_nav li a {
+  color: #e0e0e0;
+}
+body.dark-mode .navbar.navbar-default .main_nav li a:hover {
+  color: #bb86fc;
 }
 
 /* Footer */
 body.dark-mode .footer_area {
   background: #181818;
+  color: #e0e0e0;
+}
+body.dark-mode .footer_area a {
+  color: #bb86fc;
 }
 
 /* Slider */
 body.dark-mode .slider_area {
   background: url("../img/dark_slider.jpg") no-repeat center center;
   background-size: cover;
+  color: #e0e0e0;
+}
+body.dark-mode .slider_area .slider_inner .camera_caption h2 {
+  color: #bb86fc;
 }
 
 /* Testimonial Section */
 body.dark-mode .clients_testimonials_area {
   background: #202020;
+  color: #e0e0e0;
+}
+body.dark-mode .clients_testimonials_area .media-heading {
+  color: #ffffff;
 }
 
 /* FAQ Section */
 body.dark-mode .program_area {
   background: #202020;
+  color: #e0e0e0;
+}
+body.dark-mode .program_area h2 {
+  color: #ffffff;
 }
 
 /* Contact Section */
 body.dark-mode .footer_area .footer_from_area .from_main {
   background-color: #333;
+  color: #e0e0e0;
+}
+body.dark-mode .footer_area .footer_from_area .from_main input,
+body.dark-mode .footer_area .footer_from_area .from_main textarea {
+  background-color: #444;
+  color: #ffffff;
+  border: 1px solid #555;
 }
 
 /* About Section */
 body.dark-mode .about_rogram {
   background-color: #202020;
+  color: #e0e0e0;
+}
+body.dark-mode .about_rogram h2 {
+  color: #ffffff;
+}
+body.dark-mode .about_rogram p {
+  color: #d0d0d0;
 }
 
 /* Extended Sections */
 body.dark-mode .program_area {
   background: #222;
+  color: #e0e0e0;
+}
+body.dark-mode .apply_now_area {
+  background-color: #333;
+  color: #e0e0e0;
 }
 
 /* ----------------------------- */
