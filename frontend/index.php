@@ -1,5 +1,5 @@
 <?php
-$darkModeEnabled = getenv('DARK_MODE') === 'true'; // Check if dark mode is enabled
+$darkModeEnabled = getenv('FEATURE_DARK_MODE') === 'true'; // Check if dark mode is enabled
 ?>
 <!DOCTYPE html>
 <html lang="en">
