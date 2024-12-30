@@ -1,3 +1,6 @@
+<?php
+$darkModeEnabled = getenv('DARK_MODE') === 'true'; // Check if dark mode is enabled
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -30,7 +33,7 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body class="dark-mode">
+    <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
         <!--==========Main Header==========-->
         <header class="main_header_area">
             <nav class="navbar navbar-default navbar-fixed-top" id="main_navbar">
