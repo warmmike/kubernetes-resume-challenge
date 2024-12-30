@@ -50,6 +50,9 @@ spec:
               secretKeyRef:
                 name: mariadb
                 key: name
+        volumeMounts:
+          - name: mysql-initdb
+            mountPath: /docker-entrypoint-initdb.d
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
