@@ -19,6 +19,27 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mariadb
+                key: host
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: mariadb
+                key: user
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: mariadb
+                key: name
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

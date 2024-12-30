@@ -30,6 +30,16 @@ jobs:
       - name: Checkout Code x
         uses: actions/checkout@v2
 
+      - name: Deploy MariaDB (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f kubernetes/mariadb-deployment.yaml
+
+      - name: Deploy MariaDB (service)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f kubernetes/mariadb-service.yaml
+                
       - name: Deploy Application (deployment)
         uses: actions-hub/kubectl@master
         with:
