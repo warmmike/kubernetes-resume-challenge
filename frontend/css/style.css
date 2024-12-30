@@ -1221,7 +1221,20 @@ body.dark-mode .apply_now_area {
   background-color: #333;
   color: #e0e0e0;
 }
+body.dark-mode .check_tittle h2 {
+  color: #bb86fc; /* Or any color that stands out on black background */
+}
+body.dark-mode .business_content .media-body a {
+  color: #bb86fc; /* Or any color that stands out on dark background */
+}
 
+body.dark-mode .business_content .media-body p {
+  color: #e0e0e0; /* Light grey color for better contrast */
+}
+
+body.dark-mode .business_content .media-body span {
+  color: #ff4081; /* You can adjust the color of the price or any other specific text */
+}
 /* ----------------------------- */
 
 /*# sourceMappingURL=style.css.map */
