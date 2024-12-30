@@ -13,5 +13,16 @@ My plan of attack will be the following:
 - Deploy to my homelab kubernetes using self-hosted arc runners
   - Had to convert environment variables to k8s form
   - Worked on Dark Mode since it will be the same in the Cloud
-
+  - Had ChatGPT help with DarkMode css
+  - Included the following to rollout + imagePullPolicy='Always'
+  ```
+    kubectl rollout restart deployment/ecom-web
+  ```
+  - Performance testing
+  ```
+    ab -n 10000 -c 10 "http://xxx.xxx.xxx.xxx:xxxxx/"
+  ```
 - Migrate to public repos and cloud
+  - migrate to public repo
+  - terraform eks
+  - 
