@@ -27,20 +27,20 @@ jobs:
             username: ${{secrets.DOCKERHUB_USERNAME}}
             password: ${{secrets.DOCKERHUB_TOKEN}}
   
+        - name: Update Minor version
+          uses: hmanzur/actions-set-secret@v2.0.0
+          with:
+            name: 'MINOR'
+            value: $((${{ secrets.MINOR }}+1))
+            repository: EriksonGM/MasterReport
+            token: ${{ vars.GITHUB_TOKEN }}
+
         - name: build and push docker image to registry
           uses: docker/build-push-action@v5
           with:
             context: .
             push: true
             tags: warmmike/ecom-web:${{ secrets.VERSION_MAJOR }}.${{ secrets.VERSION_MINOR }}
-              
-        - name: Update Minor version
-          uses: hmanzur/actions-set-secret@v2.0.0
-          with:
-            name: 'MINOR'
-            value: $((${{ secrets.VERSION_MINOR }}+1))
-            repository: EriksonGM/MasterReport
-            token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
   deploy:
     needs: [build]
