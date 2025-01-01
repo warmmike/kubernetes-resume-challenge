@@ -14,6 +14,28 @@ env:
 
 jobs:
   build:
+    name: Container Build
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout source code
+          uses: actions/checkout@v4
+  
+        - name: login to docker registry
+          uses: docker/login-action@v3
+          with:
+            username: ${{secrets.DOCKERHUB_USERNAME}}
+            password: ${{secrets.DOCKERHUB_TOKEN}}
+  
+        - name: build and push docker image to registry
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            push: true
+            tags: warmmike/ecom-web:latest  
+    
+  deploy:
+    needs: [build]
     name: Terraform Cloud Deployment
     runs-on: ubuntu-latest
     if: github.event_name == 'push'  
@@ -26,19 +48,6 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
-
-      - name: login to docker registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{secrets.DOCKERHUB_USERNAME}}
-          password: ${{secrets.DOCKERHUB_TOKEN}}
-
-      - name: build and push docker image to registry
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: warmmike/ecom-web:latest
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
