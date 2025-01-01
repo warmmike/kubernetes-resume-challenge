@@ -11,6 +11,7 @@ env:
   S3_BUCKET: ${{ secrets.BUCKET }}
   AWS_REGION: ${{ vars.AWS_REGION }}
   EKS_CLUSTER: ${{ vars.EKS_CLUSTER }}
+  DOCKER_IMAGE_NAME: ecom-web
 
 jobs:
   build:
@@ -27,20 +28,12 @@ jobs:
             username: ${{secrets.DOCKERHUB_USERNAME}}
             password: ${{secrets.DOCKERHUB_TOKEN}}
   
-        - name: Update Minor version
-          uses: hmanzur/actions-set-secret@v2.0.0
-          with:
-            name: 'MINOR'
-            value: $((${{ secrets.VERSION_MINOR }}+1))
-            repository: EriksonGM/MasterReport
-            token: ${{ secrets.GITHUB_TOKEN }}
-
         - name: build and push docker image to registry
           uses: docker/build-push-action@v5
           with:
             context: .
             push: true
-            tags: warmmike/ecom-web:${{ secrets.VERSION_MAJOR }}.${{ secrets.VERSION_MINOR }}
+            tags: warmmike/${{ env.DOCKER_IMAGE_NAME }}:${{ github.run_number }}
 
   deploy:
     needs: [build]
@@ -116,7 +109,12 @@ jobs:
 
       - name: Deploy MariaDB (service)
         run: kubectl apply -f k8s/mariadb-service.yaml
-                
+
+      - name: Update Deployment YAML
+        run: |
+          DOCKER_IMAGE_TAG=${{ github.run_number }}
+          sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" ./k8s_manifest/deployment.yaml
+
       - name: Deploy Application (deployment)
         run: kubectl apply -f k8s/app-deployment.yaml
 
