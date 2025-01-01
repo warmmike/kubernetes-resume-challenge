@@ -104,3 +104,31 @@ jobs:
       - name: Terraform destroy
         id: destroy
         run: terraform destroy -auto-approve -input=false
+
+      - name: Configure Kubectl
+        run: aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.aws_region}
+
+      - name: Deploy MariaDB (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f k3s/mariadb-deployment.yaml
+
+      - name: Deploy MariaDB (service)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f k3s/mariadb-service.yaml
+                
+      - name: Deploy Application (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f k3s/app-deployment.yaml
+
+      - name: Deploy Application (service)
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f k3s/app-service.yaml
+
+      - name: Rollout Application (deployment)
+        uses: actions-hub/kubectl@master
+        with:
+          args: rollout restart deployment/ecom-web
