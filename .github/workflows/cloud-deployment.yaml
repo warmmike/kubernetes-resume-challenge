@@ -33,7 +33,7 @@ jobs:
             name: 'MINOR'
             value: $((${{ secrets.MINOR }}+1))
             repository: EriksonGM/MasterReport
-            token: ${{ vars.GITHUB_TOKEN }}
+            token: ${{ secrets.GITHUB_TOKEN }}
 
         - name: build and push docker image to registry
           uses: docker/build-push-action@v5
