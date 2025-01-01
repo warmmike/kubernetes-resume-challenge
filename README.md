@@ -4,6 +4,10 @@ Here I will document my journey completing the Kubernetes Resume Challenge (in r
 https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
 - STEP7 Scale the application
+  - Prometheus and Grafana installation and port-forward to prepare for load testing
+    ```
+      kubectl -n prometheus-stack port-forward deploy/prometheus-stack-grafana 3000
+    ```
   - I want to look at Keda.
   - Also want to add Prometheus and Grafana, how to view.
   - Also want to create Helm chart.
@@ -15,6 +19,16 @@ https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
   - some not helpful messages when trying to create a S3 bucket with duplicate name.
     - I looked at many options to generate unique S3 bucket names :) .
   - I installed an ingress controller and simple ingress rule.
+  - Github Actions manual run requires workflow_dispatch and if: github.event_name == 'workflow_dispatch' later on in destroy
+    ```
+      on:
+        workflow_dispatch:
+        push:
+    ```
+  - Needed to wait for ingress controller
+    ```
+      kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
+    ```
 
 - STEP2.5 Set Up Kubernetes
   - I have been using Github Actions and Self-Hosted Runners for my Homelab

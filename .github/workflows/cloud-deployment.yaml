@@ -115,8 +115,14 @@ jobs:
       - name: Deploy Application (service)
         run: kubectl apply -f k8s/app-service.yaml
 
+      - name: Wait For Ingress
+        run: kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
+
       - name: Deploy Application (ingress)
         run: kubectl apply -f k8s/app-ingress.yaml
+
+      - name: Autoscale Application
+        run: kubectl autoscale deployment ecom-web --cpu-percent=50 --min=1 --max=6
 
       - name: Rollout Application (deployment)
         run: kubectl rollout restart deployment/ecom-web

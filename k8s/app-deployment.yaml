@@ -53,6 +53,11 @@ spec:
               secretKeyRef:
                 name: mariadb
                 key: name
+        resources:
+          limits:
+            cpu: 200m
+          requests:
+            cpu: 100m
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
