@@ -100,6 +100,16 @@ $darkModeEnabled = getenv('FEATURE_DARK_MODE') === 'true'; // Check if dark mode
         </section>
         <!--==========End Slider area==========-->
 
+        <!--==========Promotional Banner==========-->
+        <section class="promo_banner row m0">
+            <div class="banner_content">
+                <h3 class="wow fadeInDown animated">Special Offer!</h3>
+                <p class="wow fadeIn animated" data-wow-delay="0.2s">Get up to 50% off on selected items. Hurry, limited time offer!</p>
+                <a class="shop_now wow fadeInU" data-wow-delay="0.4s" href="#offers">Shop Now</a>
+            </div>
+        </section>
+        <!--==========End Promotional Banner==========-->
+
         <section class="best_business_area row">
             <div class="check_tittle wow fadeInUp" data-wow-delay="0.7s" id="product-list">
                 <h2>Product List</h2>

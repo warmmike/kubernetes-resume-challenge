@@ -133,8 +133,8 @@ jobs:
       #- name: Autoscale Application
       #  run: kubectl autoscale deployment ecom-web --cpu-percent=50 --min=1 --max=6
 
-      - name: Rollout Application (deployment)
-        run: kubectl rollout restart deployment/ecom-web
+      #- name: Rollout Application (deployment)
+      #  run: kubectl rollout restart deployment/ecom-web
 
   destroy:
     name: Destroy Cloud Deployment
