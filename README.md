@@ -3,8 +3,16 @@
 Here I will document my journey completing the Kubernetes Resume Challenge (in reverse):
 https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
-- STEP3 Set Up Kubernetes on Public Cloud
-  - Github Actions and Terraform will be used for this STEP.
+- STEP7 Scale the application
+  - I want to look at Keda.
+  - Also want to add Prometheus and Grafana, how to view.
+
+- STEP3 (4,5,6) Set Up Kubernetes on Public Cloud
+  - bootstrap has terraform to create the backend S3 bucket for tfstate.
+    - I researched alot about the backend S3 tfstate chicken and egg problem and solutions.
+  - some not helpful messages when trying to create a S3 bucket with duplicate name.
+    - I looked at many options to generate unique S3 bucket names :) .
+  - I installed an ingress controller and simple ingress rule.
 
 - STEP2.5 Set Up Kubernetes
   - I have been using Github Actions and Self-Hosted Runners for my Homelab
