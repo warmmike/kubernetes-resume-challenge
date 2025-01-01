@@ -21,7 +21,7 @@ spec:
         app: ecom-web
     spec:
       containers:
-      - image: 192.168.1.100:5000/ecom-web
+      - image: warmmike/ecom-web:latest
         imagePullPolicy: Always
         name: ecom-web
         ports:

@@ -26,6 +26,19 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: login to docker registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+      - name: build and push docker image to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: warmmike/ecom-web:latest
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
     
@@ -69,6 +82,17 @@ jobs:
       - name: Install Ingress controller
         if: steps.apply.outcome == 'success' && steps.getconfig.outcome == 'success'
         run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
+
+      - name: Create PostgreSQL Kubernetes Secret
+        run: |
+          kubectl create secret generic mariadb \
+            --from-literal=host=${{ secrets.DB_HOST }} \
+            --from-literal=user=${{ secrets.DB_USER }} \
+            --from-literal=password=${{ secrets.DB_PASSWORD }} \
+            --from-literal=name=${{ secrets.DB_NAME }} \
+            --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
+            -n nginx \
+            --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
       - name: Deploy MariaDB (deployment)
         run: kubectl apply -f k8s/mariadb-deployment.yaml
