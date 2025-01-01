@@ -113,7 +113,7 @@ jobs:
       - name: Update Deployment YAML
         run: |
           DOCKER_IMAGE_TAG=${{ github.run_number }}
-          sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" ./k8s_manifest/deployment.yaml
+          sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" k8s/app-deployment.yaml
 
       - name: Deploy Application (deployment)
         run: kubectl apply -f k8s/app-deployment.yaml
