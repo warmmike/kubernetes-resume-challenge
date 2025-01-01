@@ -4,6 +4,11 @@ Here I will document my journey completing the Kubernetes Resume Challenge (in r
 https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
 - STEP7 Scale the application
+  - Horizontal Pod Autoscaling needs resource requests and Metrics Server install, note: unknown below
+    ```
+          NAME                                           REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+      horizontalpodautoscaler.autoscaling/ecom-web   Deployment/ecom-web   cpu: <unknown>/50%   1         6         1          9m47s
+    ```
   - Prometheus and Grafana installation and port-forward to prepare for load testing
     ```
       kubectl -n prometheus-stack port-forward deploy/prometheus-stack-grafana 3000

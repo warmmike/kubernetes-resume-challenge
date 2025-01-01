@@ -63,3 +63,16 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+ name: ecom-web
+spec:
+ scaleTargetRef:
+   apiVersion: apps/v1
+   kind: Deployment
+   name: ecom-web
+ minReplicas: 1
+ maxReplicas: 10
+ targetCPUUtilizationPercentage: 50
