@@ -90,9 +90,15 @@ jobs:
         if: steps.apply.outcome == 'success'
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
 
+      - name: Deploy Metrics Server
+        run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
       - name: Install Ingress controller
         if: steps.apply.outcome == 'success' && steps.getconfig.outcome == 'success'
         run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
+
+      - name: Wait For Ingress
+        run: kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
 
       - name: Create MariaDB Kubernetes Secret
         run: |
@@ -104,31 +110,37 @@ jobs:
             --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
             --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
-      - name: Deploy MariaDB (deployment)
-        run: kubectl apply -f k8s/mariadb-deployment.yaml
+      - name: Deploy Application Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: helm/ecomwebcharts
+            namespace: default
+            values: appimage=${{ env.DOCKER_IMAGE_NAME }}, apptag=${{ github.run_number }}
+            name: ecom-web-stack
 
-      - name: Deploy MariaDB (service)
-        run: kubectl apply -f k8s/mariadb-service.yaml
+    #   - name: Deploy MariaDB (deployment)
+    #     run: kubectl apply -f k8s/mariadb-deployment.yaml
 
-      - name: Update Deployment YAML
-        run: |
-          DOCKER_IMAGE_TAG=${{ github.run_number }}
-          sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" k8s/app-deployment.yaml
+    #   - name: Deploy MariaDB (service)
+    #     run: kubectl apply -f k8s/mariadb-service.yaml
 
-      - name: Deploy Application (deployment)
-        run: kubectl apply -f k8s/app-deployment.yaml
+    #   - name: Update Deployment YAML
+    #     run: |
+    #       DOCKER_IMAGE_TAG=${{ github.run_number }}
+    #       sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" k8s/app-deployment.yaml
 
-      - name: Deploy Application (service)
-        run: kubectl apply -f k8s/app-service.yaml
+    #   - name: Deploy Application (deployment)
+    #     run: kubectl apply -f k8s/app-deployment.yaml
 
-      - name: Wait For Ingress
-        run: kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
+    #   - name: Deploy Application (service)
+    #     run: kubectl apply -f k8s/app-service.yaml
 
-      - name: Deploy Application (ingress)
-        run: kubectl apply -f k8s/app-ingress.yaml
-
-      - name: Deploy Metrics Server
-        run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    #   - name: Deploy Application (ingress)
+    #     run: kubectl apply -f k8s/app-ingress.yaml
 
   destroy:
     name: Destroy Cloud Deployment
