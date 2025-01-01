@@ -3,7 +3,10 @@
 Here I will document my journey completing the Kubernetes Resume Challenge (in reverse):
 https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
-- STEP7 Scale the application
+- STEP9 & STEP8 Rolling Update
+  - Github Action set secret to update container versions and deployment image tag
+
+- STEP10 & STEP7 Auto Scale the application
   - Horizontal Pod Autoscaling needs resource requests and Metrics Server install, note: unknown below
     ```
           NAME                                           REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
@@ -14,7 +17,6 @@ https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
       kubectl -n prometheus-stack port-forward deploy/prometheus-stack-grafana 3000
     ```
   - I want to look at Keda.
-  - Also want to add Prometheus and Grafana, how to view.
   - Also want to create Helm chart.
 
 - STEP3 (4,5,6) Set Up Kubernetes on Public Cloud
