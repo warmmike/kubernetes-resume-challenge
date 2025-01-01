@@ -31,7 +31,7 @@ jobs:
           uses: hmanzur/actions-set-secret@v2.0.0
           with:
             name: 'MINOR'
-            value: $((${{ secrets.MINOR }}+1))
+            value: $((${{ secrets.VERSION_MINOR }}+1))
             repository: EriksonGM/MasterReport
             token: ${{ secrets.GITHUB_TOKEN }}
 
