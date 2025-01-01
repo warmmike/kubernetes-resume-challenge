@@ -6,8 +6,10 @@ https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 - STEP7 Scale the application
   - I want to look at Keda.
   - Also want to add Prometheus and Grafana, how to view.
+  - Also want to create Helm chart.
 
 - STEP3 (4,5,6) Set Up Kubernetes on Public Cloud
+  - 4,5,6 Deploy, Expose and ConfigMap of the application tweaks from Homelab: Service, Ingress Rule, k8s secrets in pipeline
   - bootstrap has terraform to create the backend S3 bucket for tfstate.
     - I researched alot about the backend S3 tfstate chicken and egg problem and solutions.
   - some not helpful messages when trying to create a S3 bucket with duplicate name.

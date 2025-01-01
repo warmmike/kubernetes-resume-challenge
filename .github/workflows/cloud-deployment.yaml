@@ -1,5 +1,6 @@
 name: Deploy Ecom Web to Cloud
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
