@@ -110,6 +110,20 @@ jobs:
             --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
             --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
+      - name: Deploy Prometheus Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: charts/kube-prometheus-stack
+            namespace: prometheus-stack
+            create-namespace: true
+            name: prometheus-stack
+            chart-repository: https://prometheus-community.github.io/helm-charts
+            atomic: true
+
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
@@ -121,26 +135,6 @@ jobs:
             namespace: default
             values: appimage=${{ env.DOCKER_IMAGE_NAME }}, apptag=${{ github.run_number }}
             name: ecom-web-stack
-
-    #   - name: Deploy MariaDB (deployment)
-    #     run: kubectl apply -f k8s/mariadb-deployment.yaml
-
-    #   - name: Deploy MariaDB (service)
-    #     run: kubectl apply -f k8s/mariadb-service.yaml
-
-    #   - name: Update Deployment YAML
-    #     run: |
-    #       DOCKER_IMAGE_TAG=${{ github.run_number }}
-    #       sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" k8s/app-deployment.yaml
-
-    #   - name: Deploy Application (deployment)
-    #     run: kubectl apply -f k8s/app-deployment.yaml
-
-    #   - name: Deploy Application (service)
-    #     run: kubectl apply -f k8s/app-service.yaml
-
-    #   - name: Deploy Application (ingress)
-    #     run: kubectl apply -f k8s/app-ingress.yaml
 
   destroy:
     name: Destroy Cloud Deployment
