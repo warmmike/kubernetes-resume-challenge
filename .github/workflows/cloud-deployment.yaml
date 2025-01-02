@@ -122,7 +122,6 @@ jobs:
             create-namespace: true
             name: prometheus-stack
             chart-repository: https://prometheus-community.github.io/helm-charts
-            atomic: true
 
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
