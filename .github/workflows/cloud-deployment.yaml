@@ -117,7 +117,7 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
             cluster-name: ${{ env.EKS_CLUSTER }}
-            chart-path: charts/kube-prometheus-stack
+            chart-path: prometheus-community/kube-prometheus-stack
             namespace: prometheus-stack
             create-namespace: true
             name: prometheus-stack
