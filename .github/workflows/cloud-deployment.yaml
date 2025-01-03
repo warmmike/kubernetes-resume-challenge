@@ -44,7 +44,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        #working-directory: ./terraform
     
     steps:
       - name: Checkout source code
