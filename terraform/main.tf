@@ -97,26 +97,18 @@ data "aws_iam_policy_document" "aws_lbc" {
   }
 }
 
-resource "aws_iam_role" "aws_lbc" {
-  name               = "${module.eks.cluster_name}-aws-lbc"
-  assume_role_policy = data.aws_iam_policy_document.aws_lbc.json
-}
+module "lb_role" {
+  source    = "terraform-aws-modules/iam/aws/modules/iam-role-for-service-accounts-eks"
 
-resource "aws_iam_policy" "aws_lbc" {
-  policy = file("./iam/aws-load-balancer-controller.json")
-  name   = "AWSLoadBalancerController"
-}
+  role_name = "${module.eks.cluster_name}_eks_lb"
+  attach_load_balancer_controller_policy = true
 
-resource "aws_iam_role_policy_attachment" "aws_lbc" {
-  policy_arn = aws_iam_policy.aws_lbc.arn
-  role       = aws_iam_role.aws_lbc.name
-}
-
-resource "aws_eks_pod_identity_association" "aws_lbc" {
-  cluster_name    = module.eks.cluster_name
-  namespace       = "kube-system"
-  service_account = "aws-load-balancer-controller"
-  role_arn        = aws_iam_role.aws_lbc.arn
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
+  }
 }
 
 resource "helm_release" "aws_lbc" {
