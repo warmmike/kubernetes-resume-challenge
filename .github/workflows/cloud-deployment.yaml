@@ -92,12 +92,12 @@ jobs:
       #- name: Deploy Metrics Server
       #  run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-      - name: Install Ingress controller
-        if: steps.apply.outcome == 'success' && steps.getconfig.outcome == 'success'
-        run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
+      #- name: Install Ingress controller
+      #  if: steps.apply.outcome == 'success' && steps.getconfig.outcome == 'success'
+      #  run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
 
-      - name: Wait For Ingress
-        run: kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
+      #- name: Wait For Ingress
+      #  run: kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
 
       - name: Create MariaDB Kubernetes Secret
         run: |
