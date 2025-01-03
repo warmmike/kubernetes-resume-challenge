@@ -99,4 +99,5 @@ resource "helm_release" "prometheus-stack" {
   chart      = "kube-prometheus-stack"
   namespace  = "prometheus-stack"
   version    = "67.5.0"
+  create_namespace = true
 }
