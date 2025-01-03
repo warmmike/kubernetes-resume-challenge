@@ -67,3 +67,23 @@ module "eks" {
 
   tags = var.tags
 }
+
+resource "helm_release" "metrics_server" {
+  depends_on = [module.eks]
+  name = "metrics-server"
+
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  namespace  = "kube-system"
+  version    = "3.12.1"
+}
+
+resource "helm_release" "prometheus-stack" {
+  depends_on = [module.eks]
+  name = "prometheus-stack"
+
+  repository = "https://prometheus-community.github.io/helm-charts/"
+  chart      = "kube-prometheus-stack"
+  namespace  = "prometheus-stack"
+  version    = "67.5.0"
+}

@@ -90,8 +90,8 @@ jobs:
         if: steps.apply.outcome == 'success'
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
 
-      - name: Deploy Metrics Server
-        run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+      #- name: Deploy Metrics Server
+      #  run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
       - name: Install Ingress controller
         if: steps.apply.outcome == 'success' && steps.getconfig.outcome == 'success'
@@ -110,18 +110,18 @@ jobs:
             --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
             --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
-      - name: Deploy Prometheus Helm
-        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
-        with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ env.AWS_REGION }}
-            cluster-name: ${{ env.EKS_CLUSTER }}
-            chart-path: prometheus-community/kube-prometheus-stack
-            namespace: prometheus-stack
-            create-namespace: true
-            name: prometheus-stack
-            chart-repository: https://prometheus-community.github.io/helm-charts
+      #- name: Deploy Prometheus Helm
+      #  uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+      #  with:
+      #      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #      aws-region: ${{ env.AWS_REGION }}
+      #      cluster-name: ${{ env.EKS_CLUSTER }}
+      #      chart-path: prometheus-community/kube-prometheus-stack
+      #      namespace: prometheus-stack
+      #      create-namespace: true
+      #      name: prometheus-stack
+      #      chart-repository: https://prometheus-community.github.io/helm-charts
 
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
