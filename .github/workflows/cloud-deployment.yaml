@@ -110,21 +110,21 @@ jobs:
             --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
             --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
-      - name: Deploy AWS Load Balancer Controller
-        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
-        with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ env.AWS_REGION }}
-            cluster-name: ${{ env.EKS_CLUSTER }}
-            chart-path: aws-load-balancer-controller
-            namespace: kube-system
-            name: aws-load-balancer-controller
-            chart-repository: https://aws.github.io/eks-charts/
-            values: |
-              settings.clusterName=${{ vars.CLUSTER_NAME }},
-              settings.serviceAccount.name="aws-load-balancer-controller",
-              settings.serviceAccount.create="false"
+      # - name: Deploy AWS Load Balancer Controller
+      #   uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+      #   with:
+      #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #       aws-region: ${{ env.AWS_REGION }}
+      #       cluster-name: ${{ env.EKS_CLUSTER }}
+      #       chart-path: aws-load-balancer-controller
+      #       namespace: kube-system
+      #       name: aws-load-balancer-controller
+      #       chart-repository: https://aws.github.io/eks-charts/
+      #       values: |
+      #         settings.clusterName=${{ vars.CLUSTER_NAME }},
+      #         settings.serviceAccount.name="aws-load-balancer-controller",
+      #         settings.serviceAccount.create="false"
     
       - name: Deploy Metrics Server
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
