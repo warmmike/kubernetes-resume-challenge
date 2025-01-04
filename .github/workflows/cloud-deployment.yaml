@@ -122,9 +122,9 @@ jobs:
             name: aws-load-balancer-controller
             chart-repository: https://aws.github.io/eks-charts/
             values: |
-              settings.clusterName="${{ env.EKS_CLUSTER }}",
-              settings.serviceAccount.name="aws-load-balancer-controller",
-              settings.serviceAccount.create="false"
+              clusterName="${{ env.EKS_CLUSTER }}",
+              serviceAccount.name="aws-load-balancer-controller",
+              serviceAccount.create="false"
     
       - name: Deploy Metrics Server
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
