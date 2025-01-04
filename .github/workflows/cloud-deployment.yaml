@@ -192,9 +192,25 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Get Kubernetes config
-        continue-on-error: true
         id: getconfig
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
+
+      - name: Deploy AWS Load Balancer Controller
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            action: uninstall
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: eks/aws-load-balancer-controller
+            namespace: kube-system
+            name: aws-load-balancer-controller
+            chart-repository: https://aws.github.io/eks-charts/
+            values: |
+              clusterName=${{ env.EKS_CLUSTER }},
+              serviceAccount.name=aws-load-balancer-controller,
+              serviceAccount.create=false
 
       #- name: Delete Ingress controller
       #  run: kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
