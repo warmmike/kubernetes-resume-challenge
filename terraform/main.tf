@@ -101,10 +101,13 @@ resource "kubernetes_service_account" "service-account" {
     labels = {
         "app.kubernetes.io/name"= "aws-load-balancer-controller"
         "app.kubernetes.io/component"= "controller"
+        "app.kubernetes.io/managed-by"= "Helm"
     }
     annotations = {
       "eks.amazonaws.com/role-arn" = module.lb_role.iam_role_arn
       "eks.amazonaws.com/sts-regional-endpoints" = "true"
+      "meta.helm.sh/release-name" = "aws-load-balancer-controller"
+      "meta.helm.sh/release-namespace" = "kube-system"
     }
   }
 }
