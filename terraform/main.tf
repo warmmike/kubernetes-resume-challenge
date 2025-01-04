@@ -82,6 +82,7 @@ module "eks" {
 }
 
 module "lb_role" {
+  depends_on = [module.eks.cluster_endpoint]
   source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
   role_name = "${module.eks.cluster_name}_eks_lb"
