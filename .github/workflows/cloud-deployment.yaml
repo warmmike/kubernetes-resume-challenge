@@ -122,7 +122,7 @@ jobs:
             name: aws-load-balancer-controller
             chart-repository: https://aws.github.io/eks-charts/
             values: |
-              settings.clusterName=${{ env.EKS_CLUSTER }},
+              settings.clusterName="${{ env.EKS_CLUSTER }}",
               settings.serviceAccount.name="aws-load-balancer-controller",
               settings.serviceAccount.create="false"
     
