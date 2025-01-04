@@ -117,7 +117,7 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
             cluster-name: ${{ env.EKS_CLUSTER }}
-            chart-path: stable/aws-load-balancer-controller
+            chart-path: eks/aws-load-balancer-controller
             namespace: kube-system
             name: aws-load-balancer-controller
             chart-repository: https://aws.github.io/eks-charts/
@@ -133,7 +133,7 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
             cluster-name: ${{ env.EKS_CLUSTER }}
-            chart-path: charts/metrics-server
+            chart-path: metrics-server/metrics-server
             namespace: kube-system
             name: metrics-server
             chart-repository: https://kubernetes-sigs.github.io/metrics-server/
