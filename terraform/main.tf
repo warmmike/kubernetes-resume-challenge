@@ -96,7 +96,7 @@ module "lb_role" {
 }
 
 resource "helm_release" "aws_lbc" {
-  depends_on = [module.eks.aws_eks_cluster]
+  depends_on = [module.eks.cluster_endpoint]
   name = "aws-load-balancer-controller"
 
   repository = "https://aws.github.io/eks-charts"
@@ -116,7 +116,7 @@ resource "helm_release" "aws_lbc" {
 }
 
 resource "helm_release" "metrics_server" {
-  depends_on = [module.eks.aws_eks_cluster]
+  depends_on = [module.eks.cluster_endpoint]
   name = "metrics-server"
 
   repository = "https://kubernetes-sigs.github.io/metrics-server/"
@@ -126,7 +126,7 @@ resource "helm_release" "metrics_server" {
 }
 
 resource "helm_release" "prometheus-stack" {
-  depends_on = [module.eks.aws_eks_cluster]
+  depends_on = [module.eks.cluster_endpoint]
   name = "prometheus-stack"
 
   repository = "https://prometheus-community.github.io/helm-charts/"
