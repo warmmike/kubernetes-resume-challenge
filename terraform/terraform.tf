@@ -21,6 +21,10 @@ terraform {
     }
 }
 
+module "kubernetes_provider" {
+    source = "./modules/kubernetes"
+}
+
 module "aws_provider" {
     source = "./modules/aws"
     aws_region = var.aws_region
