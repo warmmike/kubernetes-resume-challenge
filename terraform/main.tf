@@ -1,6 +1,11 @@
 # VPC for Cluster
 data "aws_availability_zones" "azs" {}
 
+data "aws_eks_cluster_auth" "cluster" {
+  depends_on = [module.eks.aws_eks_cluster]
+  name = module.eks.cluster_name
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -66,6 +71,12 @@ module "eks" {
   }
 
   tags = var.tags
+}
+
+provider "kubernetes" {
+  host = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token = data.aws_eks_cluster_auth.cluster.token
 }
 
 module "lb_role" {
