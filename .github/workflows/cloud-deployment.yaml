@@ -109,18 +109,30 @@ jobs:
             --from-literal=root_password=${{ secrets.DB_ROOT_PASSWORD }} \
             --dry-run=client -o yaml | kubectl apply -f - --insecure-skip-tls-verify --validate=false
 
-      #- name: Deploy Prometheus Helm
-      #  uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
-      #  with:
-      #      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #      aws-region: ${{ env.AWS_REGION }}
-      #      cluster-name: ${{ env.EKS_CLUSTER }}
-      #      chart-path: prometheus-community/kube-prometheus-stack
-      #      namespace: prometheus-stack
-      #      create-namespace: true
-      #      name: prometheus-stack
-      #      chart-repository: https://prometheus-community.github.io/helm-charts
+      - name: Deploy Metrics Server
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: metrics-server
+            namespace: kube-system
+            name: metrics-server
+            chart-repository: https://kubernetes-sigs.github.io/metrics-server/
+
+      - name: Deploy Prometheus Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: prometheus-community/kube-prometheus-stack
+            namespace: prometheus-stack
+            create-namespace: true
+            name: prometheus-stack
+            chart-repository: https://prometheus-community.github.io/helm-charts
 
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
@@ -163,11 +175,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Get Kubernetes config
+        continue-on-error: true
         id: getconfig
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
 
-      - name: Delete Ingress controller
-        run: kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
+      #- name: Delete Ingress controller
+      #  run: kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
 
       - name: Terraform destroy
         id: destroy
