@@ -139,6 +139,7 @@ jobs:
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
             helm-wait: true
+            timeout: 120s
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
