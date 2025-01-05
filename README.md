@@ -1,98 +1,31 @@
 # Kubernetes Resume Challenge
 
-## I decided to take on the [Kubernetes Resume Challenge](https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/) to re-affirm my interest in Kubernetes and integrate my Homelab into the workflow.
+## I decided to take on the [Kubernetes Resume Challenge](https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/) to upgrade my workflow across personal and personal projects.
 
-## Here are the most interesting things I encountered:
-- Docker image version tag handling in Github Actions
-- Helm Chart creation!
-- Performance testing and autoscale
-- Terraform backends and code layout
-- Self Hosted Runners ARC
+The Kubernetes Resume Challenge has you imagine an e-commerce website and how you can leverage containers, Kubernetes and modern GitOps.
 
-## Here were my goals along the way:
-- Use docker-compose to quickly iterate the Application testing
-- Use local Kubernetes to test Github Runner ARC Action Runner Controller, aka Scalable Self Hosted Github Runners
-- Implement modern Terraform code structure layout
-- AWS autoscale and network testing
-- Github Actions from the start
+I decided to integrate my homelab into the process.  I have been playing with **Github Action Runner Controller** that automatically deploys and scales Github Action's Runners in my homelab Kubernetes environment.
 
-## Here I document my journey in reverse chronological order:
+The challenge has an e-commerce application source code written in PHP.  I used PHP in a previous job to set up a simple website with some backend automation so I felt comfortable that I would be able to make sense of the code.
 
-- ### Extra Credit Helm
-  - I had to delete all resources to apply the Helm
-  - I want to look at Keda.
+In Step 1, the challenge recommends taking the CKAD course to familiarize yourself with Kubernetes.  Since I have been using Kubernetes awhile I decided to skip this step and get into the challenge.
 
-- ### Step 12
-  - ConfigMaps
+For Step 2, I installed docker on my Kubernetes node and used the ```docker-compose.yml``` to begin containerizing the e-commerce web application.  I would be using Github and code deployment, so I needed to make sure all sensitive data would be called using .env files so I got my **.gitignore ready to go**.
 
-- ### Step 11 & Step 10
-  - Liveness and readiness probes
-  - I want to look at Keda.
-  - Also want to create Helm chart.
+The challenge has you, in Step3, going right to deploying Kubernetes in the Public Cloud.  One of the primary advantages to using containerization and Kubernetes is that I can use the same manifests with little modification to run in the Public Cloud.
 
-- ### Step 9 & Step 8 Rolling Update and Rollback
-  - Using ChatGPT for the Ecom Website CSS updates
-  - Github Action docker image version tagging
-    - The best approach reads Dockerhub metadata to push back the metadata tags.  I went with using github.run-number, also github.sha
-      ```
-        tags: ${{ env.DOCKER_IMAGE_NAME }}:${{ github.run_number }}
-      ```
-      ```
-        - name: Update Deployment YAML
-          run: |
-            DOCKER_IMAGE_TAG=${{ github.run_number }}
-            sed -i "s|image: ${DOCKER_IMAGE_NAME}:.*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|" k8s/app-deployment.yaml
-      ```
+I used my homelab Kubernetes and private registry to migrate the docker-compose.yml to Kubernetes deployment yaml files.  I had to create Kubernetes secrets and ```secretKeyRef``` them into the deployment yaml environment.  I used Github Actions docker ```build-push-action``` to push to the private registry kicking off one of the Extra Credits of implementing a basic CI/CD pipeline.  Using this, I was able to perform **itterative testing** as I got an early start on Step 4 (deploy), Step 5 (expose), Step 6 (ConfigMaps) and Step 12 (Secrets).
 
-- ### Step 10 & Step 7 Auto Scale the application
-  - Horizontal Pod Autoscaling needs resource requests and Metrics Server install, note: unknown below
-    ```
-          NAME                                           REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
-      horizontalpodautoscaler.autoscaling/ecom-web   Deployment/ecom-web   cpu: <unknown>/50%   1         6         1          9m47s
-    ```
-  - Prometheus and Grafana installation and port-forward to prepare for load testing
-    ```
-      kubectl -n prometheus-stack port-forward deploy/prometheus-stack-grafana 3000
-    ```
+The challenge has you deploy the e-commerce website to a Public Cloud provider in Step 3.  I created a terraform AWS S3 backend bucket to hold the tfstate file that would be used for the rest of the AWS infrastructure **state tracking**.
 
-- ### Step 3 (4,5,6,12) Set Up Kubernetes on Public Cloud
-  - 4,5,6 Deploy, Expose and ConfigMap of the application tweaks from Homelab: Service, Ingress Rule, k8s secrets in pipeline
-  - bootstrap has terraform to create the backend S3 bucket for tfstate.
-    - I researched alot about the backend S3 tfstate chicken and egg problem and solutions.
-  - some not helpful messages when trying to create a S3 bucket with duplicate name.
-    - I looked at many options to generate unique S3 bucket names :) .
-  - I installed an ingress controller and simple ingress rule.
-  - Github Actions manual run requires workflow_dispatch and if: github.event_name == 'workflow_dispatch' later on in destroy
-    ```
-      on:
-        workflow_dispatch:
-        push:
-    ```
-  - Needed to wait for ingress controller
-    ```
-      kubectl -n ingress-nginx wait --for=jsonpath='{.status.loadBalancer.ingress}' service/ingress-nginx-controller --timeout=60s
-    ```
+I used Github Actions ```on: workflow_displatch: push:``` so the deployment could be manually triggered for a terrform destroy operation.
 
-- ### Step 2.5 Set Up Kubernetes
-  - I have been using Github Actions and Self-Hosted Runners for my Homelab
-  - Using my Homelab Kubernetes environment gave me the confidence to Deploy and Expose the application, partially completing STEP4, STEP5 and STEP6.
-  - Added the following to continuously test container image with imagePullPolicy='Always'
-    ```
-      kubectl rollout restart deployment/ecom-web
-    ```
-  - Performance testing
-    ```
-      ab -n 10000 -c 10 "http://website-service"
-      
-      kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://website-service/; done"
-    ```
-  - Transitioning from docker-compose to Kubernetes ConfigMaps and Environment Variables made this process smooth.
+I combined Step 7 and Step 8 for auto scaling the application.  I made sure to install metrics-server so the horizontal pod autoscaler could properly capture the CPU metrics: ```horizontalpodautoscaler.autoscaling/ecom-web   Deployment/ecom-web   cpu: <unknown>/50%```.  I also installed Prometheus and ```watch```ed the Kubernetes pods scale up and down as I ran ```ab -n 10000 -c 10 "http://website-service"``` on the e-commerce website to generate traffic.
 
-- ### Step 2 Containerize E-Commerce Website and Database: I used docker-compose to generate the Dockerfile.
-  - I struggled to find instalation repo for mysqli until adding this command to Dockerfile:
-  ```
-    'RUN docker-php-ext-install mysqli'
-  ```
-  - I used Github + Actions from the start so used .env files for everything is securely managed from the beginning.
+To test Step 8 and Step 9 I had to integrate docker **image version tagging** which is always a bit of a pain.  I finally decided to use Github run number to handle container image version tags for rollout and rollback processes: ```${{ env.DOCKER_IMAGE_NAME }}:${{ github.run_number }}```
 
-- ### Step 1 Certification: I already have a good Kubernetes foundation.  I plan to take the CKAD course and certification when this challenge is complete.
+One challenge extra credit involves **packaging the application in Helm**.  Helm is an important part of managing the CI/CD of Kubernetes applications.  I struggled with the Helm terraform provider since separate tfstate files are required for managing application state vs infrastructure.  I ultimately settled on a Github Helm action but will **move to ArgoCD for this**.
+
+I originally used a NGINX Ingress Controller with an AWS Network Load Balancer for my E-commerce website ingress.  I switched this over to the **AWS Load Balancer Controller and Application Load Balancer**.  I had to create a Kubernetes Service Account with assigned IAM role and policy attached to allow Kubernetes permissions to create the ALB.  Kubernetes takes time to deploy both the AWS Load Balancer Controller and provision the ALB.  I had to set Helm to wait for 120s timeout so Kubernetes would have the AWS LBC Pods in Ready state: ```aws-load-balancer-controller-7d966bd488-868f7   1/1     Running```.  Helm, now configured to wait and with a timeout ```helm upgrade --install --timeout 120s   --wait``` was able to avoid the error I was getting trying to my E-commerce Website Kubernetes ingress: ```Internal error occurred: failed calling webhook "mservice.elbv2.k8s.aws": failed to call webhook: the server could not find the requested resource```
+
+In the end I really enjoyed this challenge and the goals of the Resume Challenge to **build something real** using tools and processes that I can carry forward in my professional and personal projects.  I also have many more ideas on projects and tools to improve this and other projects going forward.  I may have ArgoCD integrated by the time you read this and I would also like to look at Keda for autoscaling pods outside the basic CPU and Memory offered by Kubernetes HPA.
