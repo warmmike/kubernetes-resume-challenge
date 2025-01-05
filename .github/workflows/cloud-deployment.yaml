@@ -195,7 +195,20 @@ jobs:
         id: getconfig
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
 
-      - name: Deploy AWS Load Balancer Controller
+      - name: Uninstall Application Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+            action: uninstall
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+            cluster-name: ${{ env.EKS_CLUSTER }}
+            chart-path: helm/ecomwebcharts
+            namespace: default
+            values: appimage=${{ env.DOCKER_IMAGE_NAME }}, apptag=${{ github.run_number }}
+            name: ecom-web-stack
+
+      - name: Uninstall AWS Load Balancer Controller
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
             action: uninstall
