@@ -194,10 +194,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Get Kubernetes config
+        continue-on-error: true
         id: getconfig
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
 
       - name: Uninstall Application Helm
+        continue-on-error: true
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
             action: uninstall
@@ -211,6 +213,7 @@ jobs:
             name: ecom-web-stack
 
       - name: Uninstall AWS Load Balancer Controller
+        continue-on-error: true
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
             action: uninstall
