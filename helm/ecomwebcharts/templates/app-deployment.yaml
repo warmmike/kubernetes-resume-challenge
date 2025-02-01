@@ -54,10 +54,8 @@ spec:
                 name: mariadb
                 key: name
         resources:
-          limits:
-            cpu: 200m
           requests:
-            cpu: 100m
+            cpu: 500m
         readinessProbe:
           httpGet:
             path: /
@@ -81,6 +79,6 @@ spec:
    apiVersion: apps/v1
    kind: Deployment
    name: ecom-web
- minReplicas: 3
+ minReplicas: 2
  maxReplicas: 10
  targetCPUUtilizationPercentage: 50
