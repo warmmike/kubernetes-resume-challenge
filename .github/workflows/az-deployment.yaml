@@ -8,6 +8,9 @@ on:
       - .github/workflows/az-deployment.yaml
       - 'terraformaz/**'
 
+permissions:
+  id-token: write # Require write permission to Fetch an OIDC token.
+
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
