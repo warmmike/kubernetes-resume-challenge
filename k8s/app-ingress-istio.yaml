@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+ name: istio-ingressgateway
+ namespace: aks-istio-ingress
+spec:
+ selector:
+   istio: aks-istio-ingressgateway-external
+ servers:
+ - port:
+     number: 80
+     name: http
+     protocol: HTTP
+   hosts:
+   - '*'
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+ name: ecom-web
+ namespace: default
+spec:
+ hosts:
+   - "*"
+ gateways:
+   - aks-istio-ingress/istio-ingressgateway
+ http:
+ - match:
+   - uri:
+       prefix: "/"
+   route:
+   - destination:
+       host: "ecom-web-service.default.svc.cluster.local"
+       port:
+         number: 80

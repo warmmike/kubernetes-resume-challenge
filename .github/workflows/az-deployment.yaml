@@ -1,0 +1,106 @@
+name: Deploy Ecom Web to Azure Cloud
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraformaz/**'
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_BUCKET: ${{ secrets.BUCKET }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  EKS_CLUSTER: ${{ vars.EKS_CLUSTER }}
+  DOCKER_IMAGE_NAME: warmmike/ecom-web
+
+jobs:
+  build:
+    name: Container Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'  
+
+    steps:
+        - name: Checkout source code
+          uses: actions/checkout@v4
+  
+        - name: login to docker registry
+          uses: docker/login-action@v3
+          with:
+            username: ${{secrets.DOCKERHUB_USERNAME}}
+            password: ${{secrets.DOCKERHUB_TOKEN}}
+  
+        - name: build and push docker image to registry
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            push: true
+            tags: ${{ env.DOCKER_IMAGE_NAME }}:${{ github.run_number }}
+
+  deploy:
+    needs: [build]
+    name: Terraform Azure Cloud Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'  
+
+    defaults:
+      run:
+        shell: bash
+    
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+    
+      - name: Terraform init
+        id: init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform validate
+        id: validate
+        working-directory: ./terraform
+        run: terraform validate
+
+      - name: Terraform plan
+        id: plan
+        working-directory: ./terraformaz
+        run: terraform plan -no-color -input=false -out planfile
+        continue-on-error: true
+
+      - name: Terraform plan status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform apply
+        id: apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false -parallelism=1 planfile
+
+  destroy:
+    name: Destroy Azure Cloud Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    defaults:
+        run:
+          shell: bash
+          working-directory: ./terraformaz
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+    
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+    
+      - name: Terraform Init
+        id: init
+        run: terraform init
+    
+      - name: Terraform destroy
+        id: destroy
+        run: terraform destroy -auto-approve -input=false
