@@ -113,11 +113,14 @@ jobs:
       - name: Setup helm
         uses: azure/setup-helm@v4.3.0
 
-      - name: Add Repo Metrics Server
-        run: helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+      # - name: Add Repo Metrics Server
+      #   run: helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 
-      - name: Install Metrics Server
-        run: helm upgrade --install metrics-server metrics-server/metrics-server
+      # - name: Install Metrics Server
+      #   run: helm upgrade --install metrics-server metrics-server/metrics-server
+
+      - name: Install Application
+        run: helm install helm/ecomwebcharts
 
   destroy:
     name: Destroy Azure Cloud Deployment
