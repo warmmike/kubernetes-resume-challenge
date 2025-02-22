@@ -120,7 +120,7 @@ jobs:
       #   run: helm upgrade --install metrics-server metrics-server/metrics-server
 
       - name: Install Application
-        run: helm install ecomweb helm/ecomwebcharts
+        run: helm install ecomweb helm/ecomwebcharts --set appimage=${{ env.DOCKER_IMAGE_NAME }} --set apptag=${{ github.run_number }}
 
   destroy:
     name: Destroy Azure Cloud Deployment
