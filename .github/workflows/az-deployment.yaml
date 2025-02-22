@@ -120,7 +120,7 @@ jobs:
       #   run: helm upgrade --install metrics-server metrics-server/metrics-server
 
       - name: Install Application
-        run: helm install helm/ecomwebcharts
+        run: helm install ecomweb helm/ecomwebcharts
 
   destroy:
     name: Destroy Azure Cloud Deployment
