@@ -19,7 +19,7 @@ env:
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   EKS_CLUSTER: ${{ vars.EKS_CLUSTER }}
   DOCKER_IMAGE_NAME: warmmike/ecom-web
-  TF_LOG: DEBUG
+#  TF_LOG: DEBUG
 
 jobs:
   build:
@@ -85,6 +85,26 @@ jobs:
         id: apply
         working-directory: ./terraformaz
         run: terraform apply -auto-approve -input=false -parallelism=1 planfile
+
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ secrets.resource_group }}' 
+          cluster-name: '${{ secrets.cluster_name }}'
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Setup helm
+        uses: azure/setup-helm@v4.3.0
+
+      - name: Add Repo Metrics Server
+        run: helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+
+      - name: Install Metrics Server
+        run: helm upgrade --install metrics-server metrics-server/metrics-server
 
   destroy:
     name: Destroy Azure Cloud Deployment
