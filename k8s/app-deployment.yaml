@@ -55,7 +55,7 @@ spec:
                 key: name
         resources:
           requests:
-            cpu: 500m
+            cpu: 400m
         readinessProbe:
           httpGet:
             path: /
