@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/az-deployment.yaml
       - 'terraformaz/**'
+      - 'helm/**'
 
 permissions:
   id-token: write
