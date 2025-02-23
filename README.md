@@ -6,6 +6,8 @@ The Kubernetes Resume Challenge has you imagine an e-commerce website and how yo
 
 I decided to integrate my homelab into the process.  I have been playing with ***Github Action Runner Controller*** that automatically deploys and scales Github Action's Runners in my homelab Kubernetes environment.
 
+Added Azure + Datadog :).  I am using Azure storage account for the terraform tfstate as with AWS.  I am also using Istio ingress controller in this setup.
+
 The challenge has an e-commerce application source code written in PHP.  I used PHP in a previous job to set up a simple website with some backend automation so I felt comfortable that I would be able to make sense of the code.
 
 In ***Step 1***, the challenge recommends taking the CKAD course to familiarize yourself with Kubernetes.  Since I have been using Kubernetes awhile I decided to skip this step and get into the challenge.

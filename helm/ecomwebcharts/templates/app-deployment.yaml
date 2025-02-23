@@ -80,5 +80,5 @@ spec:
    kind: Deployment
    name: ecom-web
  minReplicas: 2
- maxReplicas: 10
+ maxReplicas: 4
  targetCPUUtilizationPercentage: 50

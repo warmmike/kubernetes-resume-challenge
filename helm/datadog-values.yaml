@@ -8,7 +8,9 @@ datadog:
         fieldRef:
           fieldPath: spec.nodeName
     hostCAPath: /etc/kubernetes/certs/kubeletserver.crt
-
+  logs:
+    enabled: true
+    containerCollectAll: true
 providers:
   aks:
     enabled: true
