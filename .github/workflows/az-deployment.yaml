@@ -120,12 +120,13 @@ jobs:
       #   run: helm upgrade --install metrics-server metrics-server/metrics-server
 
       - name: Install Application
-        run: helm install ecomweb helm/ecomwebcharts --set appimage=${{ env.DOCKER_IMAGE_NAME }} --set apptag=${{ github.run_number }}
+        run: helm upgrade --install ecomweb helm/ecomwebcharts --set appimage=${{ env.DOCKER_IMAGE_NAME }} --set apptag=${{ github.run_number }}
 
       - name: Add Repo Datadog Agent
         run: helm repo add datadog https://helm.datadoghq.com && helm repo update
       - name: Install Datadog Agent
         run: kubectl create secret generic datadog-secret --from-literal api-key=${{ secrets.DATADOG_API_KEY }}
+        continue-on-error: true
       - name: Install Datadog Agent
         run: helm install datadog-agent -f helm/datadog-values.yaml datadog/datadog
 
