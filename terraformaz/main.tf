@@ -1,21 +1,3 @@
-resource "azurerm_role_definition" "role_assignment_contributor" {
-    name  = "Role Assignment Owner"
-    scope = azurerm_management_group.root.id
-    description = "A role designed for writing and deleting role assignments"
-
-    permissions {
-        actions = [
-            "Microsoft.Authorization/roleAssignments/write",
-            "Microsoft.Authorization/roleAssignments/delete",
-        ]
-        not_actions = []
-    }
-
-    assignable_scopes = [
-        azurerm_management_group.root.id
-    ]
-}
-
 # Generate random resource group name
 resource "random_pet" "rg_name" {
   prefix = var.resource_group_name_prefix
