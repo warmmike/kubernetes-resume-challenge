@@ -122,6 +122,13 @@ jobs:
       - name: Install Application
         run: helm install ecomweb helm/ecomwebcharts --set appimage=${{ env.DOCKER_IMAGE_NAME }} --set apptag=${{ github.run_number }}
 
+      - name: Add Repo Datadog Agent
+        run: helm repo add datadog https://helm.datadoghq.com && helm repo update
+      - name: Install Datadog Agent
+        run: kubectl create secret generic datadog-secret --from-literal api-key=${{ secrets.DATADOG_API_KEY }}
+      - name: Install Datadog Agent
+        run: khelm install datadog-agent -f helm/datadog-values.yaml datadog/datadog
+
   destroy:
     name: Destroy Azure Cloud Deployment
     runs-on: ubuntu-latest
