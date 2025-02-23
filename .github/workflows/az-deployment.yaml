@@ -104,7 +104,7 @@ jobs:
         uses: azure/aks-set-context@v3
         with:
           resource-group: '${{ secrets.resource_group }}' 
-          cluster-name: '${{ secrets.cluster_name }}'
+          cluster-name: '${{ vars.EKS_CLUSTER }}'
 
       - name: Setup kubectl
         id: install-kubectl
