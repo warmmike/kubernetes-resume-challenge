@@ -1,4 +1,14 @@
 datadog:
- apiKeyExistingSecret: datadog-secret
- site: datadoghq.com
+  apiKeyExistingSecret: datadog-secret
+  site: datadoghq.com
+  # Requires supported node image version
+  kubelet:
+    host:
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    hostCAPath: /etc/kubernetes/certs/kubeletserver.crt
 
+providers:
+  aks:
+    enabled: true
