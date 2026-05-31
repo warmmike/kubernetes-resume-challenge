@@ -1,6 +1,15 @@
 name: Deploy Ecom Web to Cloud
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - deploy
+          - destroy
   push:
     branches:
       - main
@@ -19,7 +28,7 @@ jobs:
   build:
     name: Container Build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'  
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.action == 'deploy')
 
     steps:
         - name: Checkout source code
@@ -42,12 +51,12 @@ jobs:
     needs: [build]
     name: Terraform Cloud Deployment
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'  
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.action == 'deploy')
 
     defaults:
       run:
         shell: bash
-    
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -170,7 +179,7 @@ jobs:
   destroy:
     name: Destroy Cloud Deployment
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'destroy'
 
     defaults:
         run:
