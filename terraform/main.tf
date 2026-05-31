@@ -82,6 +82,7 @@ provider "kubernetes" {
 module "lb_role" {
   depends_on = [module.eks.cluster_endpoint]
   source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version   = "~> 5.39"
 
   role_name = "${module.eks.cluster_name}_eks_lb"
   attach_load_balancer_controller_policy = true
@@ -91,6 +92,29 @@ module "lb_role" {
       provider_arn               = module.eks.oidc_provider_arn
       namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
     }
+  }
+}
+
+# Runs on destroy BEFORE the EKS cluster is deleted, so the Load Balancer
+# Controller can still reach AWS and clean up ALBs/ENIs it owns in the subnets.
+# Without this, orphaned ENIs block subnet deletion after `terraform destroy`.
+resource "null_resource" "cleanup_k8s_lb_resources" {
+  depends_on = [module.eks]
+
+  triggers = {
+    cluster_name = module.eks.cluster_name
+    region       = var.aws_region
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<-EOT
+      aws eks update-kubeconfig --name ${self.triggers.cluster_name} --region ${self.triggers.region} || true
+      kubectl delete ingress --all --all-namespaces --ignore-not-found=true || true
+      kubectl delete service --all-namespaces --field-selector spec.type=LoadBalancer --ignore-not-found=true || true
+      echo "Waiting 90s for AWS to release load balancers and ENIs..."
+      sleep 90
+    EOT
   }
 }
 
