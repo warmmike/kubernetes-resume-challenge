@@ -60,17 +60,27 @@ kind: GatewayClass
 metadata:
   name: aws-alb
 spec:
-  controllerName: eks.amazonaws.com/alb
+  controllerName: gateway.k8s.aws/alb
+---
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  name: ecom-web-lb-config
+spec:
+  scheme: internet-facing
+  ipAddressType: ipv4
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: ecom-web-gateway
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
 spec:
   gatewayClassName: aws-alb
+  infrastructure:
+    parametersRef:
+      group: gateway.k8s.aws
+      kind: LoadBalancerConfiguration
+      name: ecom-web-lb-config
   listeners:
   - name: http
     port: 80
@@ -78,6 +88,16 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
+---
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: ecom-web-tgc
+spec:
+  targetReference:
+    name: ecom-web-service
+  defaultConfiguration:
+    targetType: ip
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -87,7 +107,11 @@ spec:
   parentRefs:
   - name: ecom-web-gateway
   rules:
-  - backendRefs:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
     - name: ecom-web-service
       port: 80
 {{- end }}
