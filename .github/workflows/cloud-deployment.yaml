@@ -171,7 +171,8 @@ jobs:
             values: |
               clusterName=${{ env.EKS_CLUSTER }},
               serviceAccount.name=aws-load-balancer-controller,
-              serviceAccount.create=false
+              serviceAccount.create=false,
+              enableGatewayAPI=true
     
       - name: Install Gateway API CRDs
         if: env.INGRESS_TYPE == 'gateway'
