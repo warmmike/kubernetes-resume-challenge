@@ -155,6 +155,9 @@ jobs:
             name: prometheus-stack
             chart-repository: https://prometheus-community.github.io/helm-charts
     
+      - name: Install Gateway API CRDs
+        run: kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+
       - name: Deploy AWS Load Balancer Controller
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
@@ -173,10 +176,6 @@ jobs:
               serviceAccount.name=aws-load-balancer-controller,
               serviceAccount.create=false,
               enableGatewayAPI=true
-    
-      - name: Install Gateway API CRDs
-        if: env.INGRESS_TYPE == 'gateway'
-        run: kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
 
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
