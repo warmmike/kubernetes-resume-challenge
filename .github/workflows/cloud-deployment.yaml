@@ -10,6 +10,14 @@ on:
         options:
           - deploy
           - destroy
+      ingress_type:
+        description: 'Ingress type (deploy only)'
+        required: false
+        default: 'alb'
+        type: choice
+        options:
+          - alb
+          - gateway
   push:
     branches:
       - main
@@ -23,6 +31,7 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   EKS_CLUSTER: ${{ vars.EKS_CLUSTER }}
   DOCKER_IMAGE_NAME: warmmike/ecom-web
+  INGRESS_TYPE: ${{ inputs.ingress_type || 'alb' }}
 
 jobs:
   build:
@@ -164,6 +173,10 @@ jobs:
               serviceAccount.name=aws-load-balancer-controller,
               serviceAccount.create=false
     
+      - name: Install Gateway API CRDs
+        if: env.INGRESS_TYPE == 'gateway'
+        run: kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+
       - name: Deploy Application Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
         with:
@@ -173,7 +186,7 @@ jobs:
             cluster-name: ${{ env.EKS_CLUSTER }}
             chart-path: helm/ecomwebcharts
             namespace: default
-            values: appimage=${{ env.DOCKER_IMAGE_NAME }}, apptag=${{ github.run_number }}, ingressType=alb
+            values: appimage=${{ env.DOCKER_IMAGE_NAME }}, apptag=${{ github.run_number }}, ingressType=${{ env.INGRESS_TYPE }}
             name: ecom-web-stack
 
   destroy:
